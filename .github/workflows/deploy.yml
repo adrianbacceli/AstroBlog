@@ -1,5 +1,9 @@
 name: Deploy Astro site to Pages
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+  
 on:
   push:
     branches: ["main"]   # or "master" if that’s your default branch
