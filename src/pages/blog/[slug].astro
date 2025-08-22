@@ -1,12 +1,18 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
-const { slug } = Astro.params;
 
-const posts = await getCollection('posts');
-const entry = posts.find((p) => p.slug === slug);
-if (!entry) throw new Error('Post not found');
+export async function getStaticPaths() {
+  const entries = await getCollection('blog', (p) => !p.data.draft);
+  return entries
+    .filter((e) => !!e.slug)
+    .map((entry) => ({
+      params: { slug: entry.slug },   // <-- single segment, no split()
+      props: { entry },
+    }));
+}
 
+const { entry } = Astro.props;
 const { Content, data } = await entry.render();
 ---
 <BaseLayout title={`${data.title} · Adrian`} description={data.description}>

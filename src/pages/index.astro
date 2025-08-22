@@ -2,9 +2,11 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCollection } from "astro:content";
 
-const posts = (await getCollection('posts', p => !p.data.draft))
-  .sort((a,b)=> b.data.pubDate.getTime() - a.data.pubDate.getTime());
+// If your collection id is 'blog' and your files live in src/content/blog
+const posts = (await getCollection('blog', (p) => !p.data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 ---
+
 <BaseLayout title="Adrian · Security Blog" description="Minimalist IT/Cybersecurity writing">
   <section style="margin:1rem 0 2rem">
     <h1>Security Notes</h1>
@@ -13,7 +15,7 @@ const posts = (await getCollection('posts', p => !p.data.draft))
 
   <div style="display:grid; gap:1rem">
     {posts.map(({ slug, data }) => (
-      <a href={`/posts/${slug}/`} class="card" style="padding:1rem; display:block">
+      <a href={`/blog/${slug}/`} class="card" style="padding:1rem; display:block">
         <div style="display:flex; justify-content:space-between; gap:.5rem; flex-wrap:wrap;">
           <strong style="font-size:1.1rem">{data.title}</strong>
           <span class="meta">{data.pubDate.toISOString().slice(0,10)}</span>
