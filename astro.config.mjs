@@ -8,7 +8,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   // ← set your real URL or GH Pages URL
-  site: 'https://blog.example.com',
+  site: 'https://blog.adrianbacceli.com',
 
   output: 'static',
   integrations: [mdx(), sitemap()],
