@@ -1,12 +1,8 @@
 name: Deploy Astro site to Pages
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-  
 on:
   push:
-    branches: ["main"]   # or "master" if that’s your default branch
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -14,29 +10,33 @@ permissions:
   pages: write
   id-token: write
 
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5   # good practice with Pages
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - name: Install dependencies
+      - name: Install deps
         run: npm ci
 
-      - name: Build site
+      - name: Build
         run: npm run build
 
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          # IMPORTANT: upload the *contents* of dist (no extra nesting)
+          path: dist
 
   deploy:
     needs: build
@@ -45,6 +45,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
+
